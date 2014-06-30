@@ -1,3 +1,4 @@
+
     function initSlider(option){
         var conf = {},that = this,maxLength=0,wraplength=0,direction='',btnHandle='',boxsize='',maxcnt=0,slideLength=0;
         function slider(option){
@@ -27,7 +28,7 @@
         slider.prototype.start= function() {
             this.calculate();
             this.dircontrol();
-            if(wraplength<maxLength){
+            if(wraplength<maxLength || conf.shape!='slide'){
                 this.bindEvent();
                 if(this.conf.autoPlay){
                     this.conf.shape==='slide' && (maxcnt%conf.cnt===0) ? this.copyDom() :'';
@@ -41,7 +42,7 @@
             var $button = $('<span class="button" style="z-index:999"></span>');
             $button.append(conf.Wrap.find('.left'));
             $button.append(conf.Wrap.find('.right'));
-            conf.Wrap.append($button);
+            conf.Wrap.prepend($button);
             if(!conf.btnshow){
                 conf.Wrap.find('.button').hide();
             }
@@ -51,19 +52,21 @@
                 conf.timeItd = setTimeout(function(){
                     that.control(true);
                     that.loop();
-                },conf.timer)
+                },conf.timer);
             }
         };
         slider.prototype.stop = function(){
-            if(this.conf.timeItd)
+            if(this.conf.timeItd){
                 clearTimeout(this.conf.timeItd);
+                this.conf.timeItd = null;
+            }
         };
 
         slider.prototype.control= function(flag){
             if(!conf.canClick) return;
             conf.canClick = false;
             flag ?  this.conf.current++ : this.conf.current --;
-            conf.shape==='slide' ? this.scroll(conf.current) : this.fade(conf.current);
+            conf.shape==='slide' ? this.scroll(conf.current) : (conf.shape ==='fade' ? this.fade(conf.current) :this.explode(conf.current));
             var cur = conf.current > maxcnt-1 ? conf.current-(maxcnt) : conf.current;
             btnHandle.find(conf.btnselecot).eq(cur).addClass('cur').siblings().removeClass('cur');
         };
@@ -91,8 +94,57 @@
             conf.Handle.find(conf.selector).eq(conf.current).css('z-index',1).fadeIn('normal',function(){conf.canClick =true;});
             conf.index = conf.current;
         };
+        slider.prototype.explode= function(current){
+            conf.current = current = current > maxcnt-1 ? 0 : (current < 0 ? maxcnt-1 :current);
+            var handle = conf.Handle.find(conf.selector);
+            var iDom = handle.eq(conf.index);
+            var oDom = iDom.find('img');
+            var nDom = handle.eq(conf.current);
+            iDom.show();
+            nDom.show().css('z-index',-1);
+            nDom.find('img').show();
+            oDom.hide();
+            //oDom.parent().css('position','relative');
+            var W = nDom.width(),H = nDom.height(),C = 6,R = 3,aData=[],rnd =this.rnd,that=this,total=C*R;
+            for(var i =0;i<R;i++){
+                for(var j=0;j<C;j++){
+                    aData[i]={left: W*j/C, top: H*i/R};
+                    (function(){
+                        var newDiv = $('<div></div>');
+                        newDiv.css({'position':'absolute',
+                            'background':'url('+oDom.attr('src')+')'+-aData[i].left+'px '+-aData[i].top+'px no-repeat',
+                            'width':Math.ceil(W/6)+'px','height':Math.ceil(H/3)+'px','left':aData[i].left,'top':aData[i].top,
+                            'transition':'0.5s all ease-out'
+                        });
+                        oDom.parent().append(newDiv);
+                        var l=((aData[i].left+W/12)-W/2)*rnd(1,2)+W/2-W/(2*C);
+                        var t=((aData[i].top+H/6)-H/2)*rnd(1,2)+H/2;
+                        setTimeout((function(newDiv){
+                            return function(){
+                                newDiv.css({left: l+'px', top: t+'px', opacity: 0});
+                                newDiv.css('transform', 'perspective(300px) rotateX('+rnd(-180, 180)+'deg) rotateY('+rnd(-180, 180)+'deg) rotateZ('+rnd(-180, 180)+'deg) scale('+rnd(1.5, 2)+')');
+                                setTimeout(function(){
+                                    if(total <=1){
+                                        iDom.hide();
+                                        nDom.css('z-index',1);
+                                        conf.index  = conf.current;
+                                        conf.canClick =true;
+                                    }
+                                    newDiv.remove();
+                                    total--;
+                                },700);
+                            };
+
+                        })(newDiv),rnd(0,200));
+                    })();
+                }
+            }
+        };
+        slider.prototype.rnd = function(min,max){
+            return Math.random()*(max-min)+min;
+        };
         slider.prototype.animateObj = function(animatedirection,slide){
-            aobj = {};
+            var aobj = {};
             aobj[animatedirection] = slide+'px';
             return aobj;
         };
@@ -122,12 +174,12 @@
             }else{
                 //不需要自动轮播
                 if(Math.abs(slide)+wraplength>=maxLength){
-                    btnRight.hide();	
-                    btnLeft.show();	
+                    btnRight.hide();    
+                    btnLeft.show(); 
                 }
-                else if(Math.abs(slide) == 0){
+                else if(Math.abs(slide) ===0){
                     btnLeft.hide();
-                    btnRight.show();	
+                    btnRight.show();    
                 }else{
                     btnRight.show();
                     btnLeft.show();
@@ -138,41 +190,44 @@
         slider.prototype.copyDom = function(){
             conf.Handle.append(conf.Handle.find(conf.selector).clone());
             conf.Handle.css(boxsize,2*maxcnt*slideLength+'px');
-        }
+        };
 
         slider.prototype.calculate = function(){
+            $('html').css('overflow','hidde');
             conf = this.conf;that = this;  
             slideLength = conf.dir ? conf.Handle.find(conf.selector).outerWidth(true) : conf.Handle.find(conf.selector).outerHeight(true);
             maxcnt = Math.ceil(conf.Handle.find(conf.selector).length);
             wraplength = conf.dir ? conf.Wrap.width() : conf.Wrap.height();
             direction = conf.dir ? 'marginLeft' :'marginTop';
             boxsize = conf.dir ? 'width' :'height';
-            conf.Handle.css(boxsize,maxcnt*slideLength+'px');
+            conf.shape == 'slide' ? conf.Handle.css(boxsize,maxcnt*slideLength+'px') :'';
             conf.show = Math.floor(wraplength/slideLength);
             maxLength = conf.dir ? conf.Handle.outerWidth(true):conf.Handle.outerHeight(true);
         };
+
         slider.prototype.bindEvent= function(){
             btnHandle = conf.Wrap.find(conf.btnHandle);
             conf.Wrap.on('click',conf.btnLeft,function(){
                 if($(this).find(conf.btnRight).css('display')!='none')
-                    that.control(false)
+                    that.control(false);
             });
             conf.Wrap.on('click',conf.btnRight,function(){
                 if($(this).find(conf.btnRight).css('display')!='none')
-                    that.control(true)
+                    that.control(true);
             });
             btnHandle.find(conf.btnselecot).click(function(){
                 if(!conf.canClick) return;
+                conf.canClick = false;
                 var cur =  $(this).data('type');
                 if(cur!=conf.current){
                     conf.current = cur;
                     $(this).addClass('cur').siblings().removeClass('cur');
-                    conf.shape ==='slide' ?  that.jumpscroll(conf.current) : that.fade(conf.current);
+                    conf.shape ==='slide' ?  that.jumpscroll(conf.current) :(conf.shape ==='fade' ? that.fade(conf.current) :that.explode(conf.current));
                 }
             });
             conf.Wrap.hover(function(){
                 that.stop();
-               conf.btnshow ? '' : conf.Wrap.find('.button').show();
+                conf.btnshow ? '' : conf.Wrap.find('.button').show();
             },function(){
                 conf.btnshow ? '' : conf.Wrap.find('.button').hide();
                 that.loop();
@@ -180,3 +235,5 @@
         };
         return new slider(option);
     }
+
+
