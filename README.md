@@ -11,7 +11,7 @@ initSlider({
 			isbtn:false,
 			btnHandle:$('.btnscroll'),
 			btnselector:'a',
-			shape:'slide' ('fade')
+			shape:'slide' ('fade','explode')
 			btnshow:true,（左右按钮一直显示，false是hover上去才显示）
 			dir:0, 方向（0，是上下；1是左右）
 			autoPlay:true,
