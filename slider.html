@@ -6,7 +6,7 @@
 <style>
 *{margin:0;padding:0}
 li{list-style-type: none;}
-.div1{position:relative;margin-top:30px;margin-left:100px; width:300px; height:306px; overflow:hidden;}
+.div1{position:relative;margin-top:30px;margin-left:100px; width:300px; height:510px; overflow:hidden;}
 .div1 ul{ position:absolute;top:0px;height:610px;width:1200px}
 .div1 ul li{ list-style-type:none;}
 div li img{width:200px;height:100px;}
@@ -20,13 +20,14 @@ div li img{width:200px;height:100px;}
 .div2 ul li{ position:absolute;}
 .div2 li img{width:277px;height:117px;}
 
-.div3{position:absolute;top:300px;left:500px; width:600px; height:204px; overflow:hidden;}
-.div3 ul{ position:absolute;top:0px;height:102px;width:600px}
+.div3{position:absolute;top:300px;left:500px; width:600px; height:102px; overflow:hidden;}
+.div3 ul{ top:0px;height:102px;width:600px}
 .div3 ul li{float: left;list-style-type: none;}
-
+.button{position: absolute;}
+.godir{display: inline-block;width: 50px; height: 30px;}
 </style>
 <script src="js/jquery.js"></script>
-<script src="js/slider.js"></script>
+<script src="js/slider_v2.js"></script>
 </head>
 
 <body>
@@ -51,13 +52,10 @@ div li img{width:200px;height:100px;}
 <li>
 <img src="imgs/t017ac5bc9d94f4e561.jpg" />
 </li>
-<li>
-<img src="imgs/t017ac5bc9d94f4e561.jpg" />
-</li>
 </ul>
 
-<input type="button" style="" class="godir left" value="left" />
-<input type="button" class="godir right" value="right" />
+<a style="" class="godir left" >左</a>
+<a class="godir right" value="right">右</a>
 
 </div>
 
@@ -79,14 +77,22 @@ div li img{width:200px;height:100px;}
 <img src="imgs/t0199a179e2bd5bff24.jpg" />
 </li>
 <li>
+<img src="imgs/t0199a179e2bd5bff24.jpg" />
+</li>
+<li>
+<img src="imgs/t0199a179e2bd5bff24.jpg" />
+</li>
+<li>
 <img src="imgs/t017ac5bc9d94f4e561.jpg" />
 </li>
 <li>
 <img src="imgs/t017ac5bc9d94f4e561.jpg" />
 </li>
+
 </ul>
-<input type="button" style="" class="godir left" value="left" />
-<input type="button" class="godir right" value="right" />
+
+<a style="" class="godir left" >左</a>
+<a class="godir right" value="right">右</a>
 
 
 </div>
@@ -111,8 +117,12 @@ div li img{width:200px;height:100px;}
 <img src="imgs/t017ac5bc9d94f4e561.jpg" />
 </li>
 <li>
-<img src="imgs/t01e3eb6f1ac95c481f.jpg" />
+<img src="imgs/t0199a179e2bd5bff24.jpg" />
 </li>
+<li>
+<img src="imgs/t017ac5bc9d94f4e561.jpg" />
+</li>
+
 </ul>
 <input type="button" style="" class="godir left" value="left" />
 <input type="button" class="godir right" value="right" />
@@ -156,9 +166,9 @@ div li img{width:200px;height:100px;}
 
 <script>
 
-initSlider({autoPlay:false,cnt:3,dir:0});
-initSlider({Handle:$('.scrollArea1'),btnshow:false,autoPlay:true,isbtn:true,Wrap:$('.div'),dir:1});
+initSlider({autoPlay:true,cnt:5,dir:0});
 initSlider({Handle:$('.vv'),autoPlay:true,Wrap:$('.div3'),btnshow:false});
-initSlider({Handle:$('.fade'),autoPlay:true,isbtn:true,Wrap:$('.div2'),dir:1,shape:'explode',btnshow:false});
+initSlider({Handle:$('.fade'),autoPlay:true,Wrap:$('.div2'),btnshow:true,shape:'exlode'});
+
 </script>
 </html>
