@@ -8,7 +8,6 @@ initSlider({
 			selector:'li',
 			btnLeft:'.left',
 			btnRight:'.right',
-			isbtn:false,
 			btnHandle:$('.btnscroll'),
 			btnselector:'a',
 			shape:'slide' ('fade','explode')
