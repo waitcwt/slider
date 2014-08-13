@@ -6,7 +6,6 @@
                 Wrap:$('.div1'), //最外层div
                 Handle:$('.scrollArea'),//滚动ul
                 selector:'li',
-                isbtn:false,
                 btnHandle:$('.btnscroll'),//控制滚动第几个按钮
                 btnselecot:'a',
                 dir:1,//1为左右 0 为上下
