@@ -1,3 +1,4 @@
+
 function initSlider(option){
         var conf = {},that = this,maxLength=0,wraplength=0,direction='',btnHandle='',boxsize='',maxcnt=0,slideLength=0,restore=[];
         function slider(option){
@@ -65,6 +66,7 @@ function initSlider(option){
         slider.prototype.control= function(flag,jump){
             if(!conf.canClick) return;
             conf.canClick = false;
+
             !jump && (flag ?  this.conf.current++ : this.conf.current --);
             var tmax = maxcnt;
             var cur = conf.current > tmax-1 ? conf.current-(tmax) : conf.current;
@@ -72,6 +74,7 @@ function initSlider(option){
             if(conf.shape==='slide'){
                 jump ? this.jumpscroll(conf.current) : this.scroll(conf.current);
                // tmax = tmax-1;
+
             }else if(conf.shape === 'fade'){
                 this.fade(conf.current)
             }else if(conf.shape === 'explode'){
@@ -80,7 +83,7 @@ function initSlider(option){
                 if(rand==2) this.explode(conf.current);
             }        
             btnHandle.find(conf.btnselector).eq(cur).addClass('cur').siblings().removeClass('cur');
-
+ 
         };
         slider.prototype.scroll = function(current){
             //如果是顺序轮播，就是当前margin + 需要轮播值
@@ -190,6 +193,7 @@ function initSlider(option){
                 conf.current = limit-1;    
               }
             }
+
            // console.log(conf.current);
         };
         slider.prototype.noAuto= function(slide){
@@ -249,7 +253,7 @@ function initSlider(option){
             if(conf.btnhover){
                 btnHandle.find(conf.btnselector).hover(function(){
                     var cur =  $(this).index();
-                    btnmove(cur);
+                     that.control(true,true);
                 });
             }else{
                 btnHandle.find(conf.btnselector).click(function(){
@@ -259,6 +263,7 @@ function initSlider(option){
                    // btnmove(cur);
                 });
             }
+
             conf.Wrap.hover(function(){
                 that.stop();
                 conf.btnshow ? '' : conf.Wrap.find('.button').show();
@@ -289,5 +294,4 @@ function initSlider(option){
         $.extend(slider.prototype, Events);
         return new slider(option);
     }
-
 
