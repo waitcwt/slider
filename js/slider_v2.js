@@ -1,5 +1,4 @@
-
-    function initSlider(option){
+     function initSlider(option){
         var conf = {},that = this,maxLength=0,wraplength=0,direction='',btnHandle='',boxsize='',maxcnt=0,slideLength=0;
         function slider(option){
             this.conf = $.extend({
@@ -66,7 +65,18 @@
             if(!conf.canClick) return;
             conf.canClick = false;
             flag ?  this.conf.current++ : this.conf.current --;
-            conf.shape==='slide' ? this.scroll(conf.current) : (conf.shape ==='fade' ? this.fade(conf.current) :this.explode(conf.current));
+           // conf.shape==='slide' ? this.scroll(conf.current) : (conf.shape ==='fade' ? this.fade(conf.current) :this.explode(conf.current));
+            if(conf.shape==='slide'){
+                this.scroll(conf.current)
+            }else if(conf.shape === 'fade'){
+                this.fade(conf.current)
+            }else if(conf.shape === 'explode'){
+                this.explode(conf.current);
+            }else if(conf.shape === 'ramdom'){
+                var rand  = Math.ceil(Math.random()*2);
+                if(rand==1) this.fade(conf.current);
+                if(rand==2) this.explode(conf.current);
+            }
             var cur = conf.current > maxcnt-1 ? conf.current-(maxcnt) : conf.current;
             btnHandle.find(conf.btnselecot).eq(cur).addClass('cur').siblings().removeClass('cur');
         };
@@ -90,8 +100,11 @@
         };
         slider.prototype.fade =function(current){
             conf.current = current > maxcnt-1 ? 0 : (current < 0 ? maxcnt-1 :current);
-            conf.Handle.find(conf.selector).eq(conf.index).css('z-index',-1).fadeOut('normal',function(){conf.canClick =true;});
-            conf.Handle.find(conf.selector).eq(conf.current).css('z-index',1).fadeIn('normal',function(){conf.canClick =true;});
+            var domselector = conf.Handle.find(conf.selector);
+            domselector.eq(conf.index).find('img').show();
+            domselector.eq(conf.current).find('img').show();
+            domselector.eq(conf.index).css('z-index',-1).fadeOut('normal',function(){conf.canClick =true;});
+            domselector.eq(conf.current).css('z-index',1).fadeIn('normal',function(){conf.canClick =true;});
             conf.index = conf.current;
         };
         slider.prototype.explode= function(current){
@@ -201,7 +214,6 @@
         };
 
         slider.prototype.calculate = function(){
-            $('html').css('overflow','hidde');
             conf = this.conf;that = this;  
             slideLength = conf.dir ? conf.Handle.find(conf.selector).outerWidth(true) : conf.Handle.find(conf.selector).outerHeight(true);
             maxcnt = Math.ceil(conf.Handle.find(conf.selector).length);
@@ -211,7 +223,10 @@
             conf.shape == 'slide' ? conf.Handle.css(boxsize,maxcnt*slideLength+'px') :'';
             conf.show = Math.floor(wraplength/slideLength);
             maxLength = conf.dir ? conf.Handle.outerWidth(true):conf.Handle.outerHeight(true);
-            console.log(maxcnt);
+            if(conf.shape !='slide'){
+                $('html').css('overflow-x','hidden');
+                conf.Wrap.css('z-index',2);
+            }
         };
 
         slider.prototype.bindEvent= function(){
@@ -244,5 +259,3 @@
         };
         return new slider(option);
     }
-
-
