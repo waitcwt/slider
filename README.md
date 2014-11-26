@@ -2,7 +2,7 @@
 *slider.js 实现可以定制使用参数
 ```javascript
  
-initSlider({
+var s = initSlider({
 			Wrap:$('div'),
             Handle:$('.scrollArea'),
 			selector:'li',
@@ -17,4 +17,8 @@ initSlider({
 			timer:5000，
 			cnt:1 (一次轮播多少个）
 	});
+s.on('beforeslide',function(e,cur,prev){
+});
+s.on('afterslide',function(e,cur,prev){
+});
 ```
